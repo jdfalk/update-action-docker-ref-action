@@ -30,16 +30,35 @@ def update_docker_ref() -> int:
 
     content = action_file.read_text()
 
-    # Update version comment
+    # Build the full image reference with digest
+    image_ref = f"{image_name}:{image_tag}@{image_digest}"
+
+    # Update version comment (first occurrence only)
     content = re.sub(
-        r"^# version: .*$",
+        r"# version: [0-9]+\.[0-9]+\.[0-9]+",
         f"# version: {version}",
         content,
-        flags=re.MULTILINE,
+        count=1,
     )
 
     # Update docker-image default value
-    # Pattern: default: "ghcr.io/jdfalk/{action-name}@sha256:..."
-    new_image_ref = f"{image_name}@{image_digest}"
+    # Pattern: default: "ghcr.io/jdfalk/{action-name}:..."
     content = re.sub(
-        rf'(docker-image:.*?default:\s*")[^"]+(")'
+        rf'default:\s*"ghcr\.io/jdfalk/{re.escape(action_name)}:[^"]+"',
+        f'default: "{image_ref}"',
+        content,
+        count=1,
+    )
+
+    # Write updated content
+    action_file.write_text(content)
+
+    # Output for GitHub Actions
+    print("::set-output name=updated::true")
+    print(f"Updated {action_file} with {image_ref}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(update_docker_ref())
