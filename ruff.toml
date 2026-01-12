@@ -1,0 +1,29 @@
+# file: ruff.toml
+# version: 1.0.0
+# guid: 8e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b
+
+# Ruff configuration for Python linting and formatting
+
+line-length = 80
+target-version = "py313"
+
+[lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "C",      # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "PL",     # pylint
+]
+
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
