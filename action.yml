@@ -1,0 +1,52 @@
+# file: action.yml
+# version: 1.0.0
+# guid: 3f8e9d0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a
+
+name: "Update Action Docker Reference"
+description: "Update action.yml with new Docker image digest and version"
+author: "jdfalk"
+
+branding:
+  icon: "edit"
+  color: "purple"
+
+inputs:
+  action-file:
+    description: "Path to action.yml file to update"
+    required: false
+    default: "action.yml"
+  image-name:
+    description: "Docker image name (e.g., ghcr.io/jdfalk/my-action)"
+    required: true
+  image-tag:
+    description: "Docker image tag (e.g., v1.2.3)"
+    required: true
+  image-digest:
+    description: "Docker image digest (e.g., sha256:abc123...)"
+    required: true
+  version:
+    description: "Version number to update in file header (without v prefix)"
+    required: true
+  action-name:
+    description: "Action name for default image pattern matching (e.g., detect-languages-action)"
+    required: true
+
+outputs:
+  updated:
+    description: "Whether the file was updated"
+    value: ${{ steps.update.outputs.updated }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Update action.yml with Docker reference
+      id: update
+      shell: bash
+      env:
+        ACTION_FILE: ${{ inputs.action-file }}
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_TAG: ${{ inputs.image-tag }}
+        IMAGE_DIGEST: ${{ inputs.image-digest }}
+        VERSION: ${{ inputs.version }}
+        ACTION_NAME: ${{ inputs.action-name }}
+      run: python3 "${{ github.action_path }}/src/update_docker_ref.py"
