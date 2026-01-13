@@ -1,28 +1,41 @@
 # file: ruff.toml
-# version: 1.0.0
-# guid: 8e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b
+# version: 1.2.1
+# guid: 4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c
 
-# Ruff configuration for Python linting and formatting
+# Ruff configuration file
+line-length = 100
+target-version = "py38"
 
-line-length = 80
-target-version = "py313"
+# Exclude non-source/workflow folders from linting
+extend-exclude = [
+    ".vscode",
+    "dependency-analysis",
+    "logs",
+]
 
 [lint]
 select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # pyflakes
-    "I",      # isort
-    "C",      # flake8-comprehensions
-    "B",      # flake8-bugbear
-    "UP",     # pyupgrade
-    "SIM",    # flake8-simplify
-    "PL",     # pylint
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "C408",# unnecessary-collection-call
+    "SIM", # flake8-simplify
 ]
 
 ignore = [
-    "E501",   # Line too long (handled by formatter)
+    "E501",  # line too long (handled by formatter)
+    "B904",  # raise-without-from-inside-except (too noisy for existing code)
 ]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__.py
+"test_*.py" = ["S101"]    # allow assert in tests
+"scripts/protobuf_cycle_fixer.py" = ["UP031"]  # printf-string-formatting (Python 3.12 f-string escapes not available on 3.8)
 
 [format]
 quote-style = "double"
